@@ -100,12 +100,22 @@ class AvatarWidget extends StatelessWidget {
 
   String _getInitials(String name) {
     final parts = name.trim().split(' ').where((p) => p.isNotEmpty).toList();
+    
     if (parts.isEmpty) return '?';
+    
+    // Get first initial
+    final first = parts[0].isNotEmpty ? parts[0][0].toUpperCase() : '?';
+    
+    // If only one part, return just first initial
     if (parts.length == 1) {
-      return parts[0].isNotEmpty ? parts[0][0].toUpperCase() : '?';
+      return first;
     }
-    final first = parts[0].isNotEmpty ? parts[0][0] : '';
-    final second = parts[1].isNotEmpty ? parts[1][0] : '';
-    return (first + second).toUpperCase();
+    
+    // Get second initial if available
+    final second = (parts.length > 1 && parts[1].isNotEmpty) 
+        ? parts[1][0].toUpperCase() 
+        : '';
+    
+    return first + second;
   }
 }

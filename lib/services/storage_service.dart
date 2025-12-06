@@ -59,9 +59,11 @@ class StorageService {
     final uploadTask = ref.putFile(file);
 
     return uploadTask.snapshotEvents.map((snapshot) {
-      return snapshot.totalBytes > 0
-          ? snapshot.bytesTransferred / snapshot.totalBytes
-          : 0.0;
+      // Handle edge case where totalBytes might be 0
+      if (snapshot.totalBytes == 0) {
+        return 0.0;
+      }
+      return snapshot.bytesTransferred / snapshot.totalBytes;
     });
   }
 }
