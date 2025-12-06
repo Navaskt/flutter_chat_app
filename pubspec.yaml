@@ -1,0 +1,48 @@
+name: lovechat
+description: A beautiful romantic Flutter chat app for couples with pink/rose gold theme
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Firebase
+  firebase_core: ^3.8.1
+  firebase_auth: ^5.3.3
+  cloud_firestore: ^5.5.2
+  firebase_storage: ^12.3.7
+  firebase_messaging: ^15.1.5
+  
+  # UI & Styling
+  google_fonts: ^6.2.1
+  shimmer: ^3.0.0
+  lottie: ^3.2.0
+  cached_network_image: ^3.4.1
+  
+  # Utilities
+  image_picker: ^1.1.2
+  emoji_picker_flutter: ^3.1.0
+  intl: ^0.19.0
+  
+  # State Management
+  provider: ^6.1.2
+  
+  # Notifications
+  flutter_local_notifications: ^18.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  
+  # Add romantic assets
+  # assets:
+  #   - assets/images/
+  #   - assets/animations/
