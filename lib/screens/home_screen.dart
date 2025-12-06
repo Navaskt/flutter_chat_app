@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../config/theme.dart';
 import '../config/constants.dart';
 import '../services/auth_service.dart';
@@ -262,13 +263,23 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Start New Chat'),
-        content: TextField(
-          controller: emailController,
-          keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(
-            labelText: 'Partner\'s Email',
-            hintText: 'Enter email address',
-          ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Partner\'s Email',
+                hintText: 'Enter email address',
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Note: To chat with someone, they need to create an account first.',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -278,18 +289,75 @@ class _HomeScreenState extends State<HomeScreen> {
           ElevatedButton(
             onPressed: () async {
               final email = emailController.text.trim();
-              if (email.isEmpty) return;
-              
-              try {
-                // In a real app, you would search for user by email
-                // and create a chat with them
-                Navigator.pop(context);
+              if (email.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Feature coming soon!'),
+                    content: Text('Please enter an email address'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
+              }
+              
+              try {
+                final authService = context.read<AuthService>();
+                final chatService = context.read<ChatService>();
+                final currentUserId = authService.currentUserId;
+                
+                if (currentUserId == null) return;
+                
+                // Search for user by email in Firestore
+                final usersSnapshot = await FirebaseFirestore.instance
+                    .collection(AppConstants.usersCollection)
+                    .where('email', isEqualTo: email)
+                    .limit(1)
+                    .get();
+                
+                if (usersSnapshot.docs.isEmpty) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No user found with that email'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                  return;
+                }
+                
+                final otherUser = UserModel.fromDocument(usersSnapshot.docs.first);
+                
+                // Don't allow chatting with yourself
+                if (otherUser.id == currentUserId) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('You cannot chat with yourself'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                  return;
+                }
+                
+                // Create or get existing chat
+                final chatId = await chatService.createOrGetChat(
+                  currentUserId,
+                  otherUser.id,
+                );
+                
+                Navigator.pop(context);
+                
+                // Navigate to chat screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatScreen(
+                      chatId: chatId,
+                      otherUser: otherUser,
+                    ),
                   ),
                 );
               } catch (e) {
+                Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Error: $e'),

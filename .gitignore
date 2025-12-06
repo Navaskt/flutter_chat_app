@@ -38,10 +38,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Firebase
+# Firebase - only ignore actual credential files
 google-services.json
 GoogleService-Info.plist
-firebase_options.dart
+# Note: firebase_options.dart is safe to commit as it contains project IDs, not secrets
 
 # iOS
 **/ios/Pods/

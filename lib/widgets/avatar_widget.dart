@@ -99,11 +99,13 @@ class AvatarWidget extends StatelessWidget {
   }
 
   String _getInitials(String name) {
-    final parts = name.trim().split(' ');
+    final parts = name.trim().split(' ').where((p) => p.isNotEmpty).toList();
     if (parts.isEmpty) return '?';
     if (parts.length == 1) {
-      return parts[0].substring(0, 1).toUpperCase();
+      return parts[0].isNotEmpty ? parts[0][0].toUpperCase() : '?';
     }
-    return (parts[0].substring(0, 1) + parts[1].substring(0, 1)).toUpperCase();
+    final first = parts[0].isNotEmpty ? parts[0][0] : '';
+    final second = parts[1].isNotEmpty ? parts[1][0] : '';
+    return (first + second).toUpperCase();
   }
 }

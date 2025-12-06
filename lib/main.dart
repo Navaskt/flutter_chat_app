@@ -17,11 +17,14 @@ void main() async {
   
   // Initialize Firebase
   // Note: You'll need to run `flutterfire configure` to generate firebase_options.dart
-  // For now, we'll handle the error gracefully
+  // The app requires Firebase to function, so initialization must succeed
   try {
     await Firebase.initializeApp();
   } catch (e) {
     debugPrint('Firebase initialization failed: $e');
+    debugPrint('Please run: flutterfire configure');
+    // In production, you might want to show an error screen instead
+    // For now, continue and let Firebase services fail gracefully
   }
 
   runApp(const LoveChatApp());

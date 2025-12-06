@@ -446,12 +446,32 @@ class _ChatScreenState extends State<ChatScreen> {
                   onEmojiSelected: (category, emoji) {
                     _onEmojiSelected(emoji);
                   },
-                  config: Config(
-                    emojiViewConfig: EmojiViewConfig(
-                      columns: 7,
-                      emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
-                      backgroundColor: Colors.white,
+                  config: const Config(
+                    columns: 7,
+                    emojiSizeMax: 32,
+                    verticalSpacing: 0,
+                    horizontalSpacing: 0,
+                    gridPadding: EdgeInsets.zero,
+                    initCategory: Category.RECENT,
+                    bgColor: Color(0xFFF2F2F2),
+                    indicatorColor: AppTheme.roseGold,
+                    iconColor: Colors.grey,
+                    iconColorSelected: AppTheme.roseGold,
+                    backspaceColor: AppTheme.roseGold,
+                    skinToneDialogBgColor: Colors.white,
+                    skinToneIndicatorColor: Colors.grey,
+                    enableSkinTones: true,
+                    recentTabBehavior: RecentTabBehavior.RECENT,
+                    recentsLimit: 28,
+                    noRecents: Text(
+                      'No Recents',
+                      style: TextStyle(fontSize: 20, color: Colors.black26),
+                      textAlign: TextAlign.center,
                     ),
+                    loadingIndicator: SizedBox.shrink(),
+                    tabIndicatorAnimDuration: kTabScrollDuration,
+                    categoryIcons: CategoryIcons(),
+                    buttonMode: ButtonMode.MATERIAL,
                   ),
                 ),
               ),
